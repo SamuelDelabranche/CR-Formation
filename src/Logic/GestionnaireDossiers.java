@@ -7,6 +7,10 @@ import java.util.Objects;
 
 public class GestionnaireDossiers {
     private final File[] RequiredDirectories = {
+            Configuration.TEMPLATES_PATH
+    };
+
+    private final File[] FunctionnalDirectories = {
             Configuration.LABO_PATH,
             Configuration.PDF_PATH,
             Configuration.OTHER_PATH,
@@ -15,14 +19,8 @@ public class GestionnaireDossiers {
 
     public GestionnaireDossiers()
     {
-        for (File directory : RequiredDirectories){
-            if (!directory.exists()){
-                if(!directory.mkdir()){
-                    System.err.println("Echec de la creation du dossier : " + directory.getName());
-                    System.exit(1);
-                }
-            }
-        }
+        CheckOrCreateDirectory(RequiredDirectories, true);
+        CheckOrCreateDirectory(FunctionnalDirectories, false);
     }
 
     public String[] getCurrentProjectsNames()
@@ -34,4 +32,20 @@ public class GestionnaireDossiers {
         return Configuration.LABO_PATH.list();
     }
 
+    private void CheckOrCreateDirectory(File[] dir, boolean Required)
+    {
+        for (File directory : dir){
+            if (!directory.exists()){
+                if(Required){
+                    System.out.println("Le dossier obligatoire '" + directory.getName() + "' n'existe pas ! ");
+                    System.exit(1);
+                }
+
+                if(!directory.mkdir()){
+                    System.err.println("Echec de la creation du dossier : " + directory.getName());
+                    System.exit(1);
+                }
+            }
+        }
+    }
 }
